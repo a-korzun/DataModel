@@ -2,7 +2,7 @@
 
 The data model layer from `{ type, payload }` weak typed array into fully typed class with ability to define custom accessors:
 
-```
+```ts
 const user = new UserModel([
   { type: 'firstName', payload: 'Alice' },
   { type: 'lastName', payload: 'Kuk' },
@@ -38,7 +38,7 @@ interface User {
 ```
 
 2. Then create a simple representation of data model:
-```
+```ts
 export class UserModel {
   constructor(data: Raw<User>) {
     return this.construct(data);
@@ -47,7 +47,7 @@ export class UserModel {
 ```
 
 3. Mix model with proxy properties and types:
-```
+```ts
 export interface UserModel extends ModelProxy<User>, User {};
 
 applyProxy(UserModel);
