@@ -1,6 +1,18 @@
 # DataModel
 
-The data model layer from `{ type, payload }` weak typed array into fully typed class with ability to define custom accessors.
+The data model layer from `{ type, payload }` weak typed array into fully typed class with ability to define custom accessors:
+
+```
+const user = new UserModel([
+  { type: 'firstName', payload: 'Alice' },
+  { type: 'lastName', payload: 'Kuk' },
+  { type: 'birthDate', payload: '1990-01-01' }
+]);
+
+console.log(user.firstname); // Alice
+console.log(user.fullName); // Alice Kuk
+console.log(user.age); // 30
+```
 
 Imagine, you have an API response with data structure like:
 ```
@@ -25,7 +37,7 @@ interface User {
 }
 ```
 
-2. Then create a dummy object that represents data model:
+2. Then create a simple representation of data model:
 ```
 export class UserModel {
   constructor(data: Raw<User>) {
