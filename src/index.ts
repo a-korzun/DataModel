@@ -1,6 +1,32 @@
 export type Raw<T, K = keyof T, V = T[keyof T]> = Array<{ type: K; payload: V }>;
 
-export function buildProxy<T>(target: any) {
+export class ModelProxy<T> {
+  private __data: Raw<T> = [];
+  private __dataIndex: Record<keyof T, number> = {} as Record<keyof T, number>;
+
+  constructor(data: Raw<T>) {
+    this.__data = data;
+    this.updateIndex();
+
+    return buildProxy(this);
+  }
+
+  updateIndex() {
+    const index = {} as Record<keyof T, number>;
+
+    this.__data.forEach((el, i) => {
+      index[el.type] = i;
+    });
+
+    this.__dataIndex = index;
+  }
+
+  raw() {
+    return this.__data;
+  }
+}
+
+function buildProxy<T>(target: any) {
   return new Proxy(target, {
     get(target, prop: keyof T, reciever) {
       if (prop in target) {
@@ -36,43 +62,5 @@ export function buildProxy<T>(target: any) {
 
       return true;
     },
-  });
-}
-
-export class ModelProxy<T> {
-  private __data: Raw<T> = [];
-  private __dataIndex: Record<keyof T, number> = {} as Record<keyof T, number>;
-
-  construct(data: Raw<T>) {
-    this.__data = data;
-    this.updateIndex();
-
-    return buildProxy(this);
-  }
-
-  updateIndex() {
-    const index = {} as Record<keyof T, number>;
-
-    this.__data.forEach((el, i) => {
-      index[el.type] = i;
-    });
-
-    this.__dataIndex = index;
-  }
-
-  raw() {
-    return this.__data;
-  }
-}
-
-export function applyProxy(model: Function) {
-  const props = Object.getOwnPropertyNames(ModelProxy.prototype);
-
-  props.forEach(name => {
-    Object.defineProperty(
-      model.prototype,
-      name,
-      Object.getOwnPropertyDescriptor(ModelProxy.prototype, name)!
-    );
   });
 }

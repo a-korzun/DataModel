@@ -1,4 +1,4 @@
-import { applyProxy, ModelProxy, Raw } from '.';
+import {  ModelProxy, Raw } from '.';
 
 interface User {
   firstName: string;
@@ -7,9 +7,9 @@ interface User {
 }
 
 describe('DataModel', () => {
-  class UserModel {
+  class UserModel extends ModelProxy<User> {
     constructor(data: Raw<User>) {
-      return this.construct(data);
+      super(data);
     }
 
     get fullName() {
@@ -17,26 +17,24 @@ describe('DataModel', () => {
     }
   }
 
-  interface UserModel extends ModelProxy<User>, User {};
-
-  applyProxy(UserModel);
+  interface UserModel extends User {};
 
   const user = new UserModel([
     { type: 'firstName', payload: 'Alice' },
     { type: 'lastName', payload: 'Kuk' },
   ]);
 
-  test('Model is created properly', () => {
+  test('Create model', () => {
     expect(user.firstName).toBe('Alice');
     expect(user.lastName).toBe('Kuk');
   });
 
-  test('Updating values is working well', () => {
+  test('Update values', () => {
     user.firstName = 'Bob';
     expect(user.fullName).toBe('Bob Kuk');
   });
 
-  test('Adding values is working too', () => {
+  test('Add values', () => {
     expect(user.age).toBeUndefined();
     user.age = 30;
 

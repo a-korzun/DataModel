@@ -39,27 +39,21 @@ interface User {
 
 2. Then create a simple representation of data model:
 ```ts
-export class UserModel {
+export class UserModel extends ModelProxy<User> {
   constructor(data: Raw<User>) {
-    return this.construct(data);
+    super(data);
   }
 }
+
+export interface UserModel extends User {};
 ```
 
-3. Mix model with proxy properties and types:
-```ts
-export interface UserModel extends ModelProxy<User>, User {};
-
-applyProxy(UserModel);
-```
-4. Add useful accessors to data model and enjoy full typescript experience.
-
-
+3. Add useful accessors to data model and enjoy full typescript experience.
 
 ## Full example:
 
 ```ts
-import { applyProxy, ModelProxy } from './lib';
+import { ModelProxy, Raw } from './lib';
 
 interface User {
   firstName: string;
@@ -68,9 +62,9 @@ interface User {
   birthDate: string;
 }
 
-export class UserModel {
+export class UserModel extends ModelProxy<User> {
   constructor(data: Raw<User>) {
-    return this.construct(data);
+    super(data);
   }
 
   get fullName() {
@@ -95,9 +89,7 @@ export class UserModel {
   }
 }
 
-export interface UserModel extends ModelProxy<User>, User {};
-
-applyProxy(UserModel);
+export interface UserModel extends User {};
 
 const user = new UserModel([
   { type: 'firstName', payload: 'Alice' },
